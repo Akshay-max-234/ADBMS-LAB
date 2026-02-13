@@ -1,0 +1,319 @@
+SQL> CREATE TABLE Location (loc_id INT PRIMARY KEY ,city VARCHAR(50));
+
+Table created.
+
+SQL> CREATE TABLE Department (dept_id INT PRIMARY KEY ,dept_name VARCHAR(50),loc_id INT,FOREIGN KEY (loc_id)REFERENCES Location(loc_id));
+
+Table created.
+
+SQL> CREATE TABLE Department (dept_id INT PRIMARY KEY ,dept_name VARCHAR(30),loc_id INT,FOREIGN KEY (loc_id)REFERENCES Location(loc_id));
+CREATE TABLE Department (dept_id INT PRIMARY KEY ,dept_name VARCHAR(30),loc_id INT,FOREIGN KEY (loc_id)REFERENCES Location(loc_id))
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> CREATE TABLE Job (job_id INT PRIMARY KEY ,job_title VARCHAR(50),min_salary NUMBER(10),max_salary NUMBER(10));
+
+Table created.
+
+SQL> CREATE TABLE Employee (emp_id INT PRIMARY KEY ,emp_name VARCHAR(50),salary NUMBER(10),job_id INT,dept_id INT,FOREIGN KEY(job_id)REFERENCES Job (job_id),FOREIGN KEY(dept_id)REFERENCES Department (dept_id));
+
+Table created.
+
+SQL> INSERT INTO Location VALUES (1,'Kochi');
+
+1 row created.
+
+SQL> INSERT INTO Location VALUES (2,'Trivandrum');
+
+1 row created.
+
+SQL> INSERT INTO Location VALUES (3,'Kozhikode');
+
+1 row created.
+
+SQL> INSERT INTO Location VALUES (4,'Kollam');
+
+1 row created.
+
+SQL> INSERT INTO Location VALUES (5,'Kottayam');
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (10,'HR',1);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (20,'Finance',2);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (30,'IT',3);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (40,'HR',4);
+
+1 row created.
+
+SQL> INSERT INTO Department VALUES (50,'IT',5);
+
+1 row created.
+
+SQL> INSERT INTO Job VALUES (100,'Manager',50000,100000);
+
+1 row created.
+
+SQL> INSERT INTO Job VALUES (101,'Developer',30000,70000);
+
+1 row created.
+
+SQL> INSERT INTO Job VALUES (102,'Clerk',20000,40000);
+
+1 row created.
+
+SQL> INSERT INTO Job VALUES (103,'Staff',25000,40000);
+
+1 row created.
+
+SQL> INSERT INTO Job VALUES (104,'Tester',35000,60000);
+
+1 row created.
+
+SQL> INSERT INTO Employee VALUES (1,'Arya',60000,100,10);
+
+1 row created.
+
+SQL> INSERT INTO Employee VALUES (2,'Devi',60000,101,30);
+
+1 row created.
+
+SQL> INSERT INTO Employee VALUES (2,'Devi',40000,101,30);
+INSERT INTO Employee VALUES (2,'Devi',40000,101,30)
+*
+ERROR at line 1:
+ORA-00001: unique constraint (SYSTEM.SYS_C004084) violated
+
+
+SQL> INSERT INTO Employee VALUES (3,'Athira',25000,102,20);
+
+1 row created.
+
+SQL> INSERT INTO Employee VALUES (4,'Tini',35000,101,40);
+
+1 row created.
+
+SQL> INSERT INTO Employee VALUES (5,'Bini',29000,102,NULL);
+
+1 row created.
+
+SQL> SELCET e.emp_name,j.job_title FROM Employee e INNER JOIN Job j ON e.job_id=j.job_id;
+SP2-0734: unknown command beginning "SELCET e.e..." - rest of line ignored.
+SQL> SELECT e.emp_name,j.job_title FROM Employee e INNER JOIN Job j ON e.job_id=j.job_id;
+
+EMP_NAME
+--------------------------------------------------
+JOB_TITLE
+--------------------------------------------------
+Arya
+Manager
+
+Tini
+Developer
+
+Devi
+Developer
+
+
+EMP_NAME
+--------------------------------------------------
+JOB_TITLE
+--------------------------------------------------
+Bini
+Clerk
+
+Athira
+Clerk
+
+
+SQL> SELECT e.emp_name,d.dept_name FROM Employee e LEFT JOIN Department d ON e.dept_id=d.dept_id;
+
+EMP_NAME
+--------------------------------------------------
+DEPT_NAME
+--------------------------------------------------
+Arya
+HR
+
+Athira
+Finance
+
+Devi
+IT
+
+
+EMP_NAME
+--------------------------------------------------
+DEPT_NAME
+--------------------------------------------------
+Tini
+HR
+
+Bini
+
+
+
+SQL> SELECT d.dept_name,e.emp_name FROM Department d RIGHT JOIN Employee e ON d.dept_id=e.dept_id;
+
+DEPT_NAME
+--------------------------------------------------
+EMP_NAME
+--------------------------------------------------
+HR
+Arya
+
+Finance
+Athira
+
+IT
+Devi
+
+
+DEPT_NAME
+--------------------------------------------------
+EMP_NAME
+--------------------------------------------------
+HR
+Tini
+
+
+Bini
+
+
+SQL> SELECT d.dept_name,SUM(e.salary)AS total_salary FROM Employee e JOIN Department d ON e.dept_id=d.dept_id GROUP BY d.dept_name;
+
+DEPT_NAME                                          TOTAL_SALARY
+-------------------------------------------------- ------------
+IT                                                        60000
+HR                                                        95000
+Finance                                                   25000
+
+SQL> SELECT j.job_title,AVG(e.salary)AS avg_salary FROM Employee e JOIN Job j ON e.job_id=j.job_id GROUP BY j.job_title;
+
+JOB_TITLE                                          AVG_SALARY
+-------------------------------------------------- ----------
+Manager                                                 60000
+Clerk                                                   27000
+Developer                                               47500
+
+SQL> SELECT MIN(salary)AS min_salary FROM Employee;
+
+MIN_SALARY
+----------
+     25000
+
+SQL> SELECT MAX(e.salary)AS max_salary FROM Employee e JOIN Department d ON e.dept_id=d.dept_id WHERE d.dept_name='IT' ;
+
+MAX_SALARY
+----------
+     60000
+
+SQL> SELECT emp_name FROM Employee WHERE emp_name LIKE 'A%';
+
+EMP_NAME
+--------------------------------------------------
+Arya
+Athira
+
+SQL> SELECT emp_name FROM Employee WHERE emp_name LIKE '%a';
+
+EMP_NAME
+--------------------------------------------------
+Arya
+Athira
+
+SQL> SELECT emp_name FROM Employee WHERE dept_id IN (10,20);
+
+EMP_NAME
+--------------------------------------------------
+Arya
+Athira
+
+SQL> SELECT emp_name FROM Employee WHERE dept_id NOT IN (30);
+
+EMP_NAME
+--------------------------------------------------
+Arya
+Athira
+Tini
+
+SQL> SELECT emp_name FROM Employee e
+  2  SELECT emp_name FROM Employee e JOIN Department d ON e.dept_id=d.dept_id WHERE salary>30000 AND d.dept_name='IT';
+SELECT emp_name FROM Employee e JOIN Department d ON e.dept_id=d.dept_id WHERE salary>30000 AND d.dept_name='IT'
+*
+ERROR at line 2:
+ORA-00933: SQL command not properly ended
+
+
+SQL> SELECT emp_name FROM Employee e JOIN Department d ON e.dept_id=d.dept_id WHERE salary>30000 AND d.dept_name='IT';
+
+EMP_NAME
+--------------------------------------------------
+Devi
+
+SQL> SELECT emp_name FROM Employee e JOIN Department d ON e.dept_id=d.dept_id WHERE salary<25000 OR d.dept_name='HR';
+
+EMP_NAME
+--------------------------------------------------
+Arya
+Tini
+
+SQL> SELECT emp_name ,salary FROM Employee WHERE salary BETWEEN 30000 AND 50000;
+
+EMP_NAME                                               SALARY
+-------------------------------------------------- ----------
+Tini                                                    35000
+
+SQL> SELECT job_title ,min_salary FROM Job WHERE min_salary BETWEEN 25000 AND 60000;
+
+JOB_TITLE                                          MIN_SALARY
+-------------------------------------------------- ----------
+Manager                                                 50000
+Developer                                               30000
+Staff                                                   25000
+Tester                                                  35000
+
+SQL> SELECT emp_name , FROM Employee WHERE job_id=100 UNION SELECTemp_name FROM Employee WHERE job_id=101;
+SELECT emp_name , FROM Employee WHERE job_id=100 UNION SELECTemp_name FROM Employee WHERE job_id=101
+                  *
+ERROR at line 1:
+ORA-00936: missing expression
+
+
+SQL> SELECT emp_name  FROM Employee WHERE job_id=100 UNION SELECTemp_name FROM Employee WHERE job_id=101;
+SELECT emp_name  FROM Employee WHERE job_id=100 UNION SELECTemp_name FROM Employee WHERE job_id=101
+                                                      *
+ERROR at line 1:
+ORA-00928: missing SELECT keyword
+
+
+SQL> SELECT emp_name  FROM Employee WHERE job_id=100 UNION SELECT emp_name FROM Employee WHERE job_id=101;
+
+EMP_NAME
+--------------------------------------------------
+Arya
+Devi
+Tini
+
+SQL> SELECT * FROM EMPLOYEE WHERE DEPT_ID=30 AND SALARY >35000;
+
+    EMP_ID EMP_NAME                                               SALARY
+---------- -------------------------------------------------- ----------
+    JOB_ID    DEPT_ID
+---------- ----------
+         2 Devi                                                    60000
+       101         30
+
+
+SQL>
