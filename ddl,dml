@@ -1,0 +1,264 @@
+SQL> create table student(id number(5),name varchar(20),age number(3),city varchar(30));
+create table student(id number(5),name varchar(20),age number(3),city varchar(30))
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> create table students(id number(5),name varchar(20),age number(3),city varchar(30));
+create table students(id number(5),name varchar(20),age number(3),city varchar(30))
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> create table students1(id number(5),name varchar(20),age number(3),city varchar(30));
+
+Table created.
+
+SQL> desc students1
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(5)
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER(3)
+ CITY                                               VARCHAR2(30)
+
+SQL> alter table students1 add dob date;
+
+Table altered.
+
+SQL> desc students1
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(5)
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER(3)
+ CITY                                               VARCHAR2(30)
+ DOB                                                DATE
+
+SQL> alter table student modify age int;
+alter table student modify age int
+                           *
+ERROR at line 1:
+ORA-00904: "AGE": invalid identifier
+
+
+SQL> alter table students1 modify age int;
+
+Table altered.
+
+SQL> alter table students1 drop column city;
+
+Table altered.
+
+SQL> desc students1
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ ID                                                 NUMBER(5)
+ NAME                                               VARCHAR2(20)
+ AGE                                                NUMBER(38)
+ DOB                                                DATE
+
+SQL> create table CUSTOMER {cust_id,address,city,ph_no}
+  2  create table CUSTOMER {cust_id,address,city,ph_no};
+create table CUSTOMER {cust_id,address,city,ph_no}
+                      *
+ERROR at line 1:
+ORA-00911: invalid character
+
+
+SQL> create table CUSTOMER {cust_id,address,city,ph_no};
+create table CUSTOMER {cust_id,address,city,ph_no}
+                      *
+ERROR at line 1:
+ORA-00911: invalid character
+
+
+SQL> create table CUSTOMER (cust_id number primary key,address varchar(30),city varchar(20),ph_no number);
+create table CUSTOMER (cust_id number primary key,address varchar(30),city varchar(20),ph_no number)
+             *
+ERROR at line 1:
+ORA-00955: name is already used by an existing object
+
+
+SQL> create table CUSTOMERS (cust_id number primary key,address varchar(30),city varchar(20),ph_no number);
+
+Table created.
+
+SQL> desc CUSTOMERS
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CUST_ID                                   NOT NULL NUMBER
+ ADDRESS                                            VARCHAR2(30)
+ CITY                                               VARCHAR2(20)
+ PH_NO                                              NUMBER
+
+SQL> alter table CUSTOMER add name varchar(15);
+alter table CUSTOMER add name varchar(15)
+                         *
+ERROR at line 1:
+ORA-01430: column being added already exists in table
+
+
+SQL> alter table CUSTOMERS add name varchar(15);
+
+Table altered.
+
+SQL> desc CUSTOMERS
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ CUST_ID                                   NOT NULL NUMBER
+ ADDRESS                                            VARCHAR2(30)
+ CITY                                               VARCHAR2(20)
+ PH_NO                                              NUMBER
+ NAME                                               VARCHAR2(15)
+
+SQL> create table PRODUCTS (p_id number primary key,pname varchar(30),price number default 0);
+
+Table created.
+
+SQL> desc PRODUCTS;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ P_ID                                      NOT NULL NUMBER
+ PNAME                                              VARCHAR2(30)
+ PRICE                                              NUMBER
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY (cust_id) REFERENCES CUSTOMER(cust_id));
+create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY (cust_id) REFERENCES CUSTOMER(cust_id))
+                                                                                                                                 *
+ERROR at line 1:
+ORA-00904: "CUST_ID": invalid identifier
+
+
+SQL> create table INVOICEMASTER (inv_id INT,custo_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY (cust_id) REFERENCES CUSTOMER(cust_id));
+create table INVOICEMASTER (inv_id INT,custo_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY (cust_id) REFERENCES CUSTOMER(cust_id))
+                                                                                                     *
+ERROR at line 1:
+ORA-00904: "CUST_ID": invalid identifier
+
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY (custo_id) REFERENCES CUSTOMER(cust_id));
+create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY (custo_id) REFERENCES CUSTOMER(cust_id))
+                                                                                                    *
+ERROR at line 1:
+ORA-00904: "CUSTO_ID": invalid identifier
+
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMER(cust_id));
+create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMER(cust_id))
+                                                                                                                                *
+ERROR at line 1:
+ORA-00904: "CUST_ID": invalid identifier
+
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMER (cust_id));
+create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMER (cust_id))
+                                                                                                                                 *
+ERROR at line 1:
+ORA-00904: "CUST_ID": invalid identifier
+
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCESCUSTOMER(cust_id));
+create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCESCUSTOMER(cust_id))
+                                                                                                            *
+ERROR at line 1:
+ORA-00905: missing keyword
+
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMER(cust_id));
+create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMER(cust_id))
+                                                                                                                                *
+ERROR at line 1:
+ORA-00904: "CUST_ID": invalid identifier
+
+
+SQL> create table INVOICEMASTER (inv_id INT,cust_id INT,inv_date DATE,CONSTRAINT fk_cust_id FOREIGN KEY(cust_id) REFERENCES CUSTOMERS(cust_id));
+
+Table created.
+
+SQL> desc INVOICEMASTER;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INV_ID                                             NUMBER(38)
+ CUST_ID                                            NUMBER(38)
+ INV_DATE                                           DATE
+
+SQL> create table INVOICE_ITEM (inv_id(FK),p_id(FK),quantity);
+create table INVOICE_ITEM (inv_id(FK),p_id(FK),quantity)
+                                 *
+ERROR at line 1:
+ORA-00902: invalid datatype
+
+
+SQL> create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER(inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int);
+create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER(inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int)
+                                                                                                     *
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+SQL> create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER(inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int);
+create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER(inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int)
+                                                                                                     *
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+SQL> desc invoicemaster;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INV_ID                                             NUMBER(38)
+ CUST_ID                                            NUMBER(38)
+ INV_DATE                                           DATE
+
+SQL> desc products;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ P_ID                                      NOT NULL NUMBER
+ PNAME                                              VARCHAR2(30)
+ PRICE                                              NUMBER
+
+SQL> create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER (inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int);
+create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER (inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int)
+                                                                                                      *
+ERROR at line 1:
+ORA-02270: no matching unique or primary key for this column-list
+
+
+SQL> alter table invoicemaster add primary key (inv_id);
+
+Table altered.
+
+SQL> alter table products add primary key (p_id);
+alter table products add primary key (p_id)
+                         *
+ERROR at line 1:
+ORA-02260: table can have only one primary key
+
+
+SQL> desc invoicemaster;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INV_ID                                    NOT NULL NUMBER(38)
+ CUST_ID                                            NUMBER(38)
+ INV_DATE                                           DATE
+
+SQL> create table INVOICE_ITEM (inv_id int,constraint inv_id foreign key(inv_id) references INVOICEMASTER(inv_id),p_id int,constraint p_id foreign key(p_id) references PRODUCTS(p_id),quantity int);
+
+Table created.
+
+SQL> show tables;
+SP2-0158: unknown SHOW option "tables"
+SQL> desc tablesininvoice;
+ERROR:
+ORA-04043: object tablesininvoice does not exist
+
+
+SQL> desc invoice_item;
+ Name                                      Null?    Type
+ ----------------------------------------- -------- ----------------------------
+ INV_ID                                             NUMBER(38)
+ P_ID                                               NUMBER(38)
+ QUANTITY                                           NUMBER(38)
